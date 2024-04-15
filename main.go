@@ -3,21 +3,28 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
 func main() {
 
-	sdkConfig, err := config.LoadDefaultConfig(context.TODO())
+	accessKey := os.Getenv("AWS_ACCESS_KEY_ID")
+	secretKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
+
+	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
-		fmt.Println("Couldn't load default configuration. Have you set up your AWS account?")
-		fmt.Println(err)
-		return
+		panic(err)
 	}
 
-	s3Client := s3.NewFromConfig(sdkConfig)
+	s3Client := s3.NewFromConfig(cfg, func(o *s3.Options) {
+		o.Credentials = credentials.NewStaticCredentialsProvider(accessKey, secretKey, "")
+		o.Region = "ap-northeast-1"
+		o.BaseEndpoint = o.BaseEndpoint
+	})
 
 	count := 10
 
@@ -26,8 +33,7 @@ func main() {
 	result, err := s3Client.ListBuckets(context.TODO(), &s3.ListBucketsInput{})
 
 	if err != nil {
-		fmt.Printf("Couldn't list buckets for your account. Here's why: %v\n", err)
-		return
+		panic(err)
 	}
 
 	if len(result.Buckets) == 0 {
