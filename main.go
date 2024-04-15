@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -12,8 +12,8 @@ import (
 
 func main() {
 
-	accessKey := os.Getenv("AWS_ACCESS_KEY_ID")
-	secretKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
+	accessKey := "minioadmin"
+	secretKey := "minioadmin"
 
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
@@ -22,8 +22,8 @@ func main() {
 
 	s3Client := s3.NewFromConfig(cfg, func(o *s3.Options) {
 		o.Credentials = credentials.NewStaticCredentialsProvider(accessKey, secretKey, "")
-		o.Region = "ap-northeast-1"
-		o.BaseEndpoint = o.BaseEndpoint
+		o.Region = "us-east-1"
+		o.BaseEndpoint = aws.String("http://localhost:9000")
 	})
 
 	count := 10
