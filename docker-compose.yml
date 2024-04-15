@@ -14,3 +14,9 @@ services:
     command: -c "/opt/bin/minio server /export --address :9000 --console-address :9001"
     volumes:
       - ./export:/export
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app

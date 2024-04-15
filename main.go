@@ -23,7 +23,7 @@ func main() {
 	s3Client := s3.NewFromConfig(cfg, func(o *s3.Options) {
 		o.Credentials = credentials.NewStaticCredentialsProvider(accessKey, secretKey, "")
 		o.Region = "us-east-1"
-		o.BaseEndpoint = aws.String("http://localhost:9000")
+		o.BaseEndpoint = aws.String("http://minio:9000")
 	})
 
 	count := 10
